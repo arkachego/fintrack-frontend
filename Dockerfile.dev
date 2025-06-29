@@ -1,0 +1,17 @@
+# Use official Node image with Typescript support
+FROM node:22-alpine
+
+# Install curl for healthchecks
+RUN apk add --no-cache curl
+
+# Set working directory
+WORKDIR /app
+
+COPY ./package.json ./
+COPY . .
+
+RUN npm install
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev"]
