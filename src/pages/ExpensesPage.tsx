@@ -217,19 +217,14 @@ const ExpensesPage: React.FC = () => {
                   </div>
                 )}>
                   {expense.details && <div style={{ marginBottom: 24 }}>{expense.details}</div>}
-                  <Table<ExpenseType> columns={columns} dataSource={[ expense ]} pagination={false} bordered={true} style={{ textAlign: "center" }} size="small"/>
-                  {/* <div style={{ display: 'flex' }}>
-                    <div style={{ flexGrow: 1, flexBasis: 0 }}>Type: {expense.type?.name}</div>
-                    <div style={{ flexGrow: 1, flexBasis: 0 }}>Team: {expense.team?.name}</div>
-                    <div style={{ flexGrow: 1, flexBasis: 0 }}>Requestor: {expense.requestor?.name}</div>
-                    <div style={{ flexGrow: 1, flexBasis: 0 }}>Approver: {expense.approver?.name}</div>
-                  </div>
-                  <div style={{ display: 'flex' }}>
-                    <div style={{ flexGrow: 1, flexBasis: 0 }}>Amount: {expense.amount}</div>
-                    <div style={{ flexGrow: 1, flexBasis: 0 }}>Requested at: {expense.requested_at}</div>
-                    <div style={{ flexGrow: 1, flexBasis: 0 }}>Approved at:{expense.approved_at}</div>
-                    <div style={{ flexGrow: 1, flexBasis: 0 }}>Rejected at: {expense.rejected_at}</div>
-                  </div> */}
+                  <Table<ExpenseType>
+                    columns={columns}
+                    dataSource={[ expense ]}
+                    pagination={false}
+                    bordered={true}
+                    style={{ textAlign: "center" }}
+                    size="small"
+                  />
                 </Card>
               </Badge.Ribbon>
             );
