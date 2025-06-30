@@ -1,25 +1,64 @@
 // Libraries
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button, Card, Input, Space } from 'antd';
+import { KeyOutlined, LoginOutlined, UserOutlined } from '@ant-design/icons';
 
-// Components
-import ExpenseApproverSelect from "../components/select/ExpenseApproverSelect";
-import ExpenseStatusSelect from "../components/select/ExpenseStatusSelect";
-import ExpenseTypeSelect from "../components/select/ExpenseTypeSelect";
-import ExpenseTeamSelect from "../components/select/ExpenseTeamSelect";
-import ExpenseRequestorSelect from "../components/select/ExpenseRequestorSelect";
+// Actions
+import { loadState } from "../slices/globalSlice";
+
+// Hooks
+import { useAppDispatch } from "../hooks/useRedux";
+
+// Utilities
+import { loginUser } from "../utilities/request";
 
 const LoginPage: React.FC = () => {
 
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [ loading, setLoading ] = useState<boolean>(false);
-  const [ disabled, setDisabled ] = useState<boolean>(false);
+  const [ email, setEmail ] = useState<string>('liam.bennett@arkahalder.com');
+  const [ password, setPassword ] = useState<string>('SamplePassword1234#');
+
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      const response = await loginUser(email, password);
+      dispatch(loadState(response.data));
+      navigate('/expenses');
+    }
+    catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
 
   return (
-    <div>
-      <ExpenseTeamSelect loading={loading} disabled={disabled}/>
-      <ExpenseApproverSelect loading={loading} disabled={disabled}/>
-      <ExpenseRequestorSelect loading={loading} disabled={disabled}/>
-      <ExpenseTypeSelect loading={loading} disabled={disabled}/>
-      <ExpenseStatusSelect loading={loading} disabled={disabled}/>
+    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: "center", justifyContent: "center" }}>
+      <Card title="FinTrack: Sign-In" loading={loading} style={{ width: 360 }}>
+        <Space direction="vertical" size={16} style={{ width: '100%' }}>
+          <Input
+            disabled={loading}
+            placeholder="Email Address"
+            prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+            value={email}
+            onChange={event => setEmail(event.target.value)}
+          />
+          <Input.Password
+            disabled={loading}
+            placeholder="Login Password"
+            prefix={<KeyOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+            value={password}
+            onChange={event => setPassword(event.target.value)}
+          />
+          <Button type="primary" block loading={loading} disabled={loading} onClick={handleLogin}>
+            <LoginOutlined/>
+            Sign-In
+          </Button>
+        </Space>
+      </Card>
     </div>
   );
 

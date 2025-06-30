@@ -3,10 +3,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 // Pages
 import LoginPage from "./pages/LoginPage";
-import HomePage from "./pages/HomePage";
-import ExpenseListPage from "./pages/ExpenseListPage";
-import ExpenseViewPage from "./pages/ExpenseViewPage";
-import ExpenseEditPage from "./pages/ExpenseEditPage";
+import LayoutPage from './pages/LayoutPage';
+import ExpensesPage from './pages/ExpensesPage';
+import AnalyticsPage from "./pages/AnalyticsPage";
 
 const App: React.FC = () => {
 
@@ -15,11 +14,10 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/expenses" element={<ExpenseListPage />} />
-        <Route path="/expense/add-new" element={<ExpenseEditPage />} />
-        <Route path="/expense/:id/view" element={<ExpenseViewPage />} />
-        <Route path="/expense/:id/edit" element={<ExpenseEditPage />} />
+        <Route element={<LayoutPage />}>
+          <Route path="/expenses" element={<ExpensesPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

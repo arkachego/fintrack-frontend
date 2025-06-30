@@ -7,13 +7,12 @@ import { Select } from 'antd';
 import type { SelectOptionType } from "../../types/SelectOptionType";
 
 type Props = {
-  loading: boolean;
   disabled: boolean;
   placeholder: string;
   fetchData: () => Promise<AxiosResponse<any, any>>;
 };
 
-const AsynchronousSelect: React.FC<Props> = ({ loading, disabled, placeholder, fetchData }) => {
+const AsynchronousSelect: React.FC<Props> = ({ disabled, placeholder, fetchData }) => {
 
   const [ options, setOptions ] = useState<SelectOptionType[]>([]);
 
@@ -38,8 +37,7 @@ const AsynchronousSelect: React.FC<Props> = ({ loading, disabled, placeholder, f
     <Select
       showSearch
       allowClear
-      style={{ width: 200 }}
-      loading={loading}
+      style={{ width: '100%' }}
       disabled={disabled}
       placeholder={placeholder}
       optionFilterProp="label"

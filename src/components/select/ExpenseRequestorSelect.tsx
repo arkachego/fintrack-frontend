@@ -5,7 +5,6 @@ import AsynchronousSelect from "./AsynchronousSelect";
 import { fetchExpenseRequestors } from "../../utilities/request";
 
 type Props = {
-  loading: boolean;
   disabled: boolean;
 };
 

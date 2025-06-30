@@ -11,6 +11,11 @@ html,body,#root {
   padding: 0px;
   overflow: hidden;
   font-family: var(--ant-font-family);
+  background-color: rgb(240, 242, 245);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+header {
+  padding: 0px !important;
 }
