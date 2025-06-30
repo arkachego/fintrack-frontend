@@ -1,8 +1,8 @@
 // Libraries
 import { useEffect } from "react";
 import DayJS from "dayjs";
-import { Badge, Button, Card, DatePicker, Space, Table, Typography, type TableProps } from "antd";
-import { EllipsisOutlined, FilterOutlined, RedoOutlined } from '@ant-design/icons';
+import { Badge, Button, Card, DatePicker, Input, Pagination, Space, Table, Typography, type TableProps } from "antd";
+import { EllipsisOutlined, FilterOutlined, PlusOutlined, RedoOutlined, SearchOutlined } from '@ant-design/icons';
 
 // Actions
 import {
@@ -146,13 +146,13 @@ const ExpensesPage: React.FC = () => {
         <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ display: 'flex', gap: 16 }}>
             <div style={{ flexGrow: 1, flexBasis: 0 }}>
-              <Button block>
+              <Button block type="dashed">
                 <RedoOutlined/>
                 Reset
               </Button>
             </div>
             <div style={{ flexGrow: 1, flexBasis: 0 }}>
-              <Button block type="primary">
+              <Button block type="default">
                 <FilterOutlined/>
                 Filter
               </Button>
@@ -199,37 +199,59 @@ const ExpensesPage: React.FC = () => {
         </div>
       </div>
       <div style={{ flexGrow: 1, overflow: 'auto' }}>
-        <Space direction="vertical" size={16} style={{ width: '100%', padding: 24 }}>
-          {expenses.map(expense => {
-            const status = expense.status?.name;
-            let color = 'orange';
-            if (status === EXPENSE_STATUS_TYPE.APPROVED) {
-              color = 'green';
-            }
-            else if (status === EXPENSE_STATUS_TYPE.APPROVED) {
-              color = 'red';
-            }
-            return (
-              <Badge.Ribbon key={expense.id} text={expense.status?.name} color={color} style={{ marginTop: 10 }}>
-                <Card title={expense.name} extra={(
-                  <div style={{ display: 'flex', marginRight: 42 }}>
-                    <Button size="small" icon={<EllipsisOutlined />} />
-                  </div>
-                )}>
-                  {expense.details && <div style={{ marginBottom: 24 }}>{expense.details}</div>}
-                  <Table<ExpenseType>
-                    columns={columns}
-                    dataSource={[ expense ]}
-                    pagination={false}
-                    bordered={true}
-                    style={{ textAlign: "center" }}
-                    size="small"
-                  />
-                </Card>
-              </Badge.Ribbon>
-            );
-          })}
-        </Space>
+        <div style={{ height: 88, padding: 24, borderBottom: 'thin solid #DEDEDE', display: 'flex', justifyContent: 'flex-end', gap: 16 }}>
+          <div style={{ width: 320 }}>
+            <Input
+              placeholder="Search Expenses..."
+              suffix={<SearchOutlined/>}
+            />
+          </div>
+          <Button type="primary">
+            <PlusOutlined/>
+            Add New
+          </Button>
+        </div>
+        <div style={{ width: '100%', height: window.innerHeight - 232, overflow: 'hidden auto' }}>
+          <Space direction="vertical" size={16} style={{ width: '100%', padding: 24 }}>
+            {expenses.map(expense => {
+              const status = expense.status?.name;
+              let color = 'orange';
+              if (status === EXPENSE_STATUS_TYPE.APPROVED) {
+                color = 'green';
+              }
+              else if (status === EXPENSE_STATUS_TYPE.APPROVED) {
+                color = 'red';
+              }
+              return (
+                <Badge.Ribbon key={expense.id} text={expense.status?.name} color={color} style={{ marginTop: 10 }}>
+                  <Card title={expense.name} extra={(
+                    <div style={{ display: 'flex', marginRight: 42 }}>
+                      <Button size="small" icon={<EllipsisOutlined />} />
+                    </div>
+                  )}>
+                    {expense.details && <div style={{ marginBottom: 24 }}>{expense.details}</div>}
+                    <Table<ExpenseType>
+                      columns={columns}
+                      dataSource={[ expense ]}
+                      pagination={false}
+                      bordered={true}
+                      style={{ textAlign: "center" }}
+                      size="small"
+                    />
+                  </Card>
+                </Badge.Ribbon>
+              );
+            })}
+          </Space>
+        </div>
+        <div style={{ height: 80, padding: 24, borderTop: 'thin solid #DEDEDE', display: 'flex', justifyContent: 'center' }}>
+          <Pagination
+            total={85}
+            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+            defaultPageSize={20}
+            defaultCurrent={1}
+          />
+        </div>
       </div>
     </div>
   );

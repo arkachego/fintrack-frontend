@@ -81,7 +81,7 @@ const LayoutPage: React.FC = () => {
             onClick={event => onPageChange(event.key)}
           />
         </div>
-        <Button danger style={{ marginRight: 12 }} onClick={handleLogout}>
+        <Button danger style={{ marginRight: 24 }} onClick={handleLogout}>
           <LogoutOutlined/>
           Sign-Out
         </Button>
