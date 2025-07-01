@@ -29,21 +29,10 @@ const ExpenseFilter: React.FC = () => {
 
   const [ form ] = Form.useForm();
   const dispatch = useAppDispatch();
-  const user = useAppSelector(state => state.global.user);
   const type = useAppSelector(state => state.global.type);
   const visible = useAppSelector(state => state.search.visible);
   const loading = useAppSelector(state => state.expense.list.loading);
   const search = useAppSelector(state => state.search.value);
-
-  useEffect(() => {
-    if (type?.name === USER_TYPE.EMPLOYEE) {
-      setTimeout(() => {
-        dispatch(updateFilters({
-          requestor_id: user?.id,
-        }));
-      }, 500);
-    }
-  }, [ type ]);
 
   useEffect(() => {
     if (search) {

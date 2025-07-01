@@ -1,9 +1,6 @@
 // Libraries
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-// Constants
-import { USER_TYPE } from '../constants/user-types';
-
 // Types
 import { type ModelObjectType } from '../types/ModelObjectType';
 
@@ -17,8 +14,19 @@ interface GlobalState {
 const initialState: GlobalState = {
   user: null,
   type: null,
-  active: null,
-  menu: [],
+  active: 'expenses',
+  menu: [
+    {
+      key: 'expenses',
+      label: 'Expenses',
+      url: '/expenses',
+    },
+    {
+      key: 'analytics',
+      label: 'Analytics',
+      url: '/analytics',
+    },
+  ],
 };
 
 export const globalSlice = createSlice({
@@ -29,27 +37,10 @@ export const globalSlice = createSlice({
       state.user = null;
       state.type = null;
       state.active = null;
-      state.menu = [];
     },
     loadState: (state, action: PayloadAction<GlobalState>) => {
       state.user = action.payload.user;
       state.type = action.payload.type;
-      const newMenu = [
-        {
-          key: 'expenses',
-          label: 'Expenses',
-          url: '/expenses',
-        },
-      ];
-      if (action.payload.type?.name === USER_TYPE.ADMINISTRATOR) {
-        newMenu.push({
-          key: 'analytics',
-          label: 'Analytics',
-          url: '/analytics',
-        });
-      }
-      state.active = newMenu[0].key;
-      state.menu = newMenu;
     },
     activatePage: (state, action: PayloadAction<string>) => {
       state.active = action.payload;
