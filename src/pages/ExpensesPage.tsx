@@ -155,7 +155,7 @@ const ExpensesPage: React.FC = () => {
           pageSize={search.item_value}
           pageSizeOptions={[ 20, 50, 100 ]}
           onChange={(page: number) => dispatch(updatePageValue(page))}
-          onShowSizeChange={(page: number, item: number) => dispatch(updateItemValue(item))}
+          onShowSizeChange={(_: number, item: number) => dispatch(updateItemValue(item))}
         />
       </div>
     </div>

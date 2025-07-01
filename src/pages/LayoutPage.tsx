@@ -29,6 +29,7 @@ const LayoutPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.global.user);
+  const type = useAppSelector(state => state.global.type);
   const active = useAppSelector(state => state.global.active);
   const menu = useAppSelector(state => state.global.menu);
 
@@ -81,10 +82,14 @@ const LayoutPage: React.FC = () => {
             onClick={event => onPageChange(event.key)}
           />
         </div>
-        <Button danger style={{ marginRight: 24 }} onClick={handleLogout}>
-          <LogoutOutlined/>
-          Sign-Out
-        </Button>
+        <div style={{ display: 'flex', alignItems: 'center', marginRight: 24 }}>
+          <b style={{ color: 'white', fontSize: 20, marginRight: 6 }}>{user?.name}</b>
+          <span style={{ color: 'white', marginRight: 16 }}>({type?.name})</span>
+          <Button danger onClick={handleLogout}>
+            <LogoutOutlined/>
+            Sign-Out
+          </Button>
+        </div>
       </Header>
       <Content style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
         <Outlet />

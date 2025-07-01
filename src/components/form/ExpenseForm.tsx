@@ -21,9 +21,13 @@ import SubmitButton from '../button/SubmitButton';
 
 // Actions
 import { closeExpenseModal } from '../../slices/expenseSlice';
+import { resetState as resetSearchState } from '../../slices/searchSlice';
 
 // Hooks
 import { useAppSelector, useAppDispatch } from '../../hooks/useRedux';
+
+// Utilities
+import { createExpense } from "../../utilities/request";
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -45,7 +49,18 @@ const ExpenseForm: React.FC = () => {
   }, [ expense ]);
 
   const onClick = async () => {
-    console.log(form.getFieldsValue());
+    try {
+      const payload = form.getFieldsValue();
+      await createExpense({
+        ...payload,
+        spent_at: payload.spent_at.toISOString(),
+      });
+      dispatch(resetSearchState());
+      dispatch(closeExpenseModal());
+    }
+    catch (error) {
+      console.error(error);
+    }
   };
 
   const props: UploadProps = {
@@ -89,6 +104,7 @@ const ExpenseForm: React.FC = () => {
           <DatePicker
             style={{ width: '100%' }}
             format="DD-MMM-YY"
+            maxDate={DayJS()}
           />
         </Form.Item>
         <Form.Item name="type_id" label="Category" rules={[{ required: true }]}>

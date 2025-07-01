@@ -3,6 +3,7 @@ import axios from 'axios';
 
 // Types
 import type { SearchType } from '../types/SearchType';
+import type { ExpenseType } from '../types/ExpenseType';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
@@ -111,4 +112,12 @@ export const fetchExpenseCount = (payload: SearchType) => {
 export const fetchExpenseResult = (payload: SearchType) => {
   const { criteria, segment } = generateQuery(payload);
   return api.post('/expense/search', { criteria, segment });
+};
+
+export const createExpense = (payload: ExpenseType) => {
+  return api.post('/expense', payload);
+};
+
+export const updateStatus = (payload: ExpenseType) => {
+  return api.patch('/expense/status', payload);
 };

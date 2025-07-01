@@ -1,5 +1,6 @@
 // Libraries
 import { Card, Col, Table, Tag } from "antd";
+import { PictureOutlined } from '@ant-design/icons';
 
 // Constants
 import { EXPENSE_STATUS_TYPE } from "../../constants/expense-status-types";
@@ -34,6 +35,7 @@ type ExpenseCardProps = {
 const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense }) => {
 
   const dispatch = useAppDispatch();
+  const thumbnail = expense.files ? expense.files[0] : null;
 
   const dataSource = [
     {
@@ -100,15 +102,21 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense }) => {
           >
             {expense.status?.name}
           </Tag>
-          <img
-            src="/sample-image.jpeg"
-            alt="Preview"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
-          />
+          {thumbnail ? (
+            <img
+              src="/sample-image.jpeg"
+              alt="Preview"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+          ) : (
+            <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#CDCDCD' }}>
+              <PictureOutlined style={{ fontSize: 150 }}/>
+            </div>
+          )}
         </div>
         <Card.Meta
           title={expense.name}
