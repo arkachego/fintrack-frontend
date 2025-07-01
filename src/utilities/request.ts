@@ -6,7 +6,7 @@ import type { SearchType } from '../types/SearchType';
 import type { ExpenseType } from '../types/ExpenseType';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
+  baseURL: import.meta.env.SERVER_API_BASE_URL || 'http://localhost:3000',
   headers: {
     'Content-Type': 'application/json',
   },
