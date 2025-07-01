@@ -61,7 +61,7 @@ const generateQuery = (payload: SearchType) => {
       reference: payload.team_id,
     });
   }
-  if (payload.requested_at.length) {
+  if (payload.requested_at?.length) {
     criteria.push({
       field: 'requested_at',
       operator: '>=',
