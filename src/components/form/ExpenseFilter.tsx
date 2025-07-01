@@ -14,6 +14,9 @@ import SubmitButton from '../button/SubmitButton';
 // Actions
 import { toggleSearchModal, updateFilters } from '../../slices/searchSlice';
 
+// Constants
+import { USER_TYPE } from "../../constants/user-types";
+
 // Hooks
 import { useAppSelector, useAppDispatch } from '../../hooks/useRedux';
 
@@ -26,9 +29,21 @@ const ExpenseFilter: React.FC = () => {
 
   const [ form ] = Form.useForm();
   const dispatch = useAppDispatch();
+  const user = useAppSelector(state => state.global.user);
+  const type = useAppSelector(state => state.global.type);
   const visible = useAppSelector(state => state.search.visible);
   const loading = useAppSelector(state => state.expense.list.loading);
   const search = useAppSelector(state => state.search.value);
+
+  useEffect(() => {
+    if (type?.name === USER_TYPE.EMPLOYEE) {
+      setTimeout(() => {
+        dispatch(updateFilters({
+          requestor_id: user?.id,
+        }));
+      }, 500);
+    }
+  }, [ type ]);
 
   useEffect(() => {
     if (search) {
@@ -70,11 +85,13 @@ const ExpenseFilter: React.FC = () => {
             allowClear
           />
         </Form.Item>
-        <Form.Item name="requestor_id" label="Requestor">
-          <ExpenseRequestorSelect
-            allowClear
-          />
-        </Form.Item>
+        {type?.name === USER_TYPE.ADMINISTRATOR && (
+          <Form.Item name="requestor_id" label="Requestor">
+            <ExpenseRequestorSelect
+              allowClear
+            />
+          </Form.Item>
+        )}
         <Form.Item name="approver_id" label="Approver">
           <ExpenseApproverSelect
             allowClear

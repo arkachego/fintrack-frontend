@@ -1,4 +1,6 @@
 // Libraries
+import DayJS from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { Card, Col, Table, Tag } from "antd";
 import { PictureOutlined } from '@ant-design/icons';
 
@@ -14,6 +16,8 @@ import { useAppDispatch } from "../../hooks/useRedux";
 // Actions
 import { openExpenseModal } from "../../slices/expenseSlice";
 
+DayJS.extend(relativeTime);
+
 const getStatusColor: (type: string) => string = (type) => {
   switch (type) {
     case EXPENSE_STATUS_TYPE.APPROVED: {
@@ -24,6 +28,20 @@ const getStatusColor: (type: string) => string = (type) => {
     }
     default: {
       return 'orange';
+    }
+  }
+};
+
+const getReferenceDate: (expense: ExpenseType) => string = (expense) => {
+  switch (expense.type?.name) {
+    case EXPENSE_STATUS_TYPE.APPROVED: {
+      return expense.approved_at as string;
+    }
+    case EXPENSE_STATUS_TYPE.REJECTED: {
+      return expense.rejected_at as string;
+    }
+    default: {
+      return expense.approved_at as string;
     }
   }
 };
@@ -100,7 +118,7 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense }) => {
               marginRight: 0,
             }}
           >
-            {expense.status?.name}
+            {expense.status?.name} {expense.status?.name === EXPENSE_STATUS_TYPE.PENDING ? 'for' : ''} {DayJS(getReferenceDate(expense)).fromNow(true)} {expense.status?.name === EXPENSE_STATUS_TYPE.PENDING ? '' : 'ago'}
           </Tag>
           {thumbnail ? (
             <img
