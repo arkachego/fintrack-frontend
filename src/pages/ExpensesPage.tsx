@@ -1,45 +1,75 @@
 // Libraries
-import { useEffect } from "react";
-import DayJS from "dayjs";
-import { Badge, Button, Card, DatePicker, Input, Pagination, Space, Table, Typography, type TableProps } from "antd";
-import { EllipsisOutlined, FilterOutlined, PlusOutlined, RedoOutlined, SearchOutlined } from '@ant-design/icons';
+import { useEffect, useState } from "react";
+import { Button, Input, Row, Pagination } from "antd";
+import { FilterFilled, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
 // Actions
+import {
+  toggleSearchModal,
+  updateKeyword,
+  updatePageValue,
+  updateItemValue,
+} from "../slices/searchSlice";
 import {
   setListLoading,
   setListCount,
   updateExpenseList,
+  openExpenseModal,
 } from "../slices/expenseSlice";
 
-// Constants
-import { EXPENSE_STATUS_TYPE } from "../constants/expense-status-types";
-
 // Components
-import ExpenseTypeSelect from "../components/select/ExpenseTypeSelect";
-import ExpenseStatusSelect from "../components/select/ExpenseStatusSelect";
-import ExpenseTeamSelect from "../components/select/ExpenseTeamSelect";
-import ExpenseRequestorSelect from "../components/select/ExpenseRequestorSelect";
-import ExpenseApproverSelect from "../components/select/ExpenseApproverSelect";
+import ExpenseCard from "../components/card/ExpenseCard";
+import ExpenseFilter from "../components/form/ExpenseFilter";
+import ExpenseForm from "../components/form/ExpenseForm";
 
 // Hooks
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 
 // Utilities
 import { fetchExpenseCount, fetchExpenseResult } from "../utilities/request";
-import type { ExpenseType } from "../types/ExpenseType";
-
-const { RangePicker } = DatePicker;
 
 const ExpensesPage: React.FC = () => {
 
   const dispatch = useAppDispatch();
-  const search = useAppSelector(state => state.search);
+  const search = useAppSelector(state => state.search.value);
   const loading = useAppSelector(state => state.expense.list.loading);
+  const count = useAppSelector(state => state.expense.list.count);
   const expenses = useAppSelector(state => state.expense.list.value);
+  const [ launched, setLaunched ] = useState<boolean>(false);
+  const [ searchString, setSearchString ] = useState<string>('');
+
+  const {
+    keyword,
+    type_id,
+    status_id,
+    team_id,
+    approver_id,
+    requestor_id,
+    requested_at,
+    page_value,
+    item_value,
+  } = search;
 
   useEffect(() => {
-    loadFirstPage();
+    launchModule();
   }, []);
+
+  useEffect(() => {
+    if (launched) {
+      loadFirstPage();
+    }
+  }, [ keyword, type_id, status_id, team_id, approver_id, requestor_id, requested_at, item_value ]);
+  
+  useEffect(() => {
+    if (launched) {
+      loadOtherPage();
+    }
+  }, [ page_value ]);
+
+  const launchModule = async () => {
+    await loadFirstPage();
+    setLaunched(true);
+  };
 
   const loadFirstPage = async () => {
     try {
@@ -61,7 +91,7 @@ const ExpensesPage: React.FC = () => {
     try {
       dispatch(setListLoading(true));
       const { data: searchResult } = await fetchExpenseResult(search);
-      dispatch(updateExpenseList(searchResult.count));
+      dispatch(updateExpenseList(searchResult));
     }
     catch (error) {
       console.error(error);
@@ -71,187 +101,62 @@ const ExpensesPage: React.FC = () => {
     }
   };
 
-  const STAMP_FORMAT = 'DD-MMM-YY hh:mm A';
-
-  const columns: TableProps<ExpenseType>['columns'] = [
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
-      width: '12.5%',
-      align: "center",
-      render: value => value.name,
-    },
-    {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
-      width: '12.5%',
-      align: "center",
-      render: value => `₹ ${value}`,
-    },
-    {
-      title: 'Team',
-      dataIndex: 'team',
-      key: 'team',
-      width: '12.5%',
-      align: "center",
-      render: value => value.name,
-    },
-    {
-      title: 'Requestor',
-      dataIndex: 'requestor',
-      key: 'requestor',
-      width: '12.5%',
-      align: "center",
-      render: value => value.name,
-    },
-    {
-      title: 'Approver',
-      dataIndex: 'approver',
-      key: 'approver',
-      width: '12.5%',
-      align: "center",
-      render: value => value.name,
-    },
-    {
-      title: 'Request Date',
-      dataIndex: 'requested_at',
-      key: 'requested_at',
-      width: '12.5%',
-      align: "center",
-      render: value => DayJS(value).format(STAMP_FORMAT),
-    },
-    {
-      title: 'Approval Date',
-      dataIndex: 'approved_at',
-      key: 'approved_at',
-      width: '12.5%',
-      align: "center",
-      render: value => value ? DayJS(value).format(STAMP_FORMAT) : null,
-    },
-    {
-      title: 'Rejection Date',
-      dataIndex: 'rejected_at',
-      key: 'rejected_at',
-      width: '12.5%',
-      align: "center",
-      render: value => value ? DayJS(value).format(STAMP_FORMAT) : null,
-    },
-  ];
+  const onSearchEnter = (event: any) => {
+    if (event.key === 'Enter') {
+      dispatch(updateKeyword(searchString));
+    }
+  };
 
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex' }}>
-      <div style={{ width: 360, flexShrink: 0, borderRight: 'thin solid #DEDEDE' }}>
-        <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div style={{ display: 'flex', gap: 16 }}>
-            <div style={{ flexGrow: 1, flexBasis: 0 }}>
-              <Button block type="dashed">
-                <RedoOutlined/>
-                Reset
-              </Button>
-            </div>
-            <div style={{ flexGrow: 1, flexBasis: 0 }}>
-              <Button block type="default">
-                <FilterOutlined/>
-                Filter
-              </Button>
-            </div>
-          </div>
-          <div>
-            <Typography.Title level={5} style={{ marginTop: 0 }}>Expense Type</Typography.Title>
-            <ExpenseTypeSelect
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <Typography.Title level={5} style={{ marginTop: 0 }}>Expense Status</Typography.Title>
-            <ExpenseStatusSelect
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <Typography.Title level={5} style={{ marginTop: 0 }}>Expense Requestor</Typography.Title>
-            <ExpenseRequestorSelect
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <Typography.Title level={5} style={{ marginTop: 0 }}>Expense Approver</Typography.Title>
-            <ExpenseApproverSelect
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <Typography.Title level={5} style={{ marginTop: 0 }}>Spending Team</Typography.Title>
-            <ExpenseTeamSelect
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <Typography.Title level={5} style={{ marginTop: 0 }}>Request Date</Typography.Title>
-            <RangePicker
-              style={{ width: '100%' }}
-              placeholder={['Minimum Date', 'Maximum Date']}
-              disabled={loading}
-            />
-          </div>
-        </div>
-      </div>
-      <div style={{ flexGrow: 1, overflow: 'auto' }}>
-        <div style={{ height: 88, padding: 24, borderBottom: 'thin solid #DEDEDE', display: 'flex', justifyContent: 'flex-end', gap: 16 }}>
-          <div style={{ width: 320 }}>
-            <Input
-              placeholder="Search Expenses..."
-              suffix={<SearchOutlined/>}
-            />
-          </div>
-          <Button type="primary">
+    <div style={{ width: '100%', height: '100%' }}>
+      <div style={{ height: 88, padding: 24, borderBottom: 'thin solid #DEDEDE', display: 'flex', justifyContent: 'space-between' }}>
+        <Button
+          icon={<FilterFilled/>}
+          onClick={() => dispatch(toggleSearchModal())}
+        />
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Input
+            allowClear
+            placeholder="Search Expenses..."
+            suffix={<SearchOutlined/>}
+            style={{ width: 320 }}
+            value={searchString}
+            onChange={event => setSearchString(event.target.value)}
+            onKeyDown={onSearchEnter}
+            disabled={loading}
+          />
+          <Button
+            type="primary"
+            onClick={() => dispatch(openExpenseModal())}
+            disabled={loading}
+          >
             <PlusOutlined/>
             Add New
           </Button>
         </div>
-        <div style={{ width: '100%', height: window.innerHeight - 232, overflow: 'hidden auto' }}>
-          <Space direction="vertical" size={16} style={{ width: '100%', padding: 24 }}>
-            {expenses.map(expense => {
-              const status = expense.status?.name;
-              let color = 'orange';
-              if (status === EXPENSE_STATUS_TYPE.APPROVED) {
-                color = 'green';
-              }
-              else if (status === EXPENSE_STATUS_TYPE.APPROVED) {
-                color = 'red';
-              }
-              return (
-                <Badge.Ribbon key={expense.id} text={expense.status?.name} color={color} style={{ marginTop: 10 }}>
-                  <Card title={expense.name} extra={(
-                    <div style={{ display: 'flex', marginRight: 42 }}>
-                      <Button size="small" icon={<EllipsisOutlined />} />
-                    </div>
-                  )}>
-                    {expense.details && <div style={{ marginBottom: 24 }}>{expense.details}</div>}
-                    <Table<ExpenseType>
-                      columns={columns}
-                      dataSource={[ expense ]}
-                      pagination={false}
-                      bordered={true}
-                      style={{ textAlign: "center" }}
-                      size="small"
-                    />
-                  </Card>
-                </Badge.Ribbon>
-              );
-            })}
-          </Space>
-        </div>
-        <div style={{ height: 80, padding: 24, borderTop: 'thin solid #DEDEDE', display: 'flex', justifyContent: 'center' }}>
-          <Pagination
-            total={85}
-            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-            defaultPageSize={20}
-            defaultCurrent={1}
-          />
-        </div>
+      </div>
+      <div style={{ width: '100%', height: window.innerHeight - 232, overflow: 'hidden auto' }}>
+        <Row gutter={[24, 24]} style={{ padding: 24 }}>
+          {expenses.map(expense => (
+            <ExpenseCard key={expense.id} expense={expense}/>
+          ))}
+        </Row>
+      </div>
+      <ExpenseFilter/>
+      <ExpenseForm/>
+      <div style={{ height: 80, padding: 24, borderTop: 'thin solid #DEDEDE', display: 'flex', justifyContent: 'center' }}>
+        <Pagination
+          total={count}
+          disabled={loading}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          defaultPageSize={20}
+          defaultCurrent={1}
+          current={search.page_value}
+          pageSize={search.item_value}
+          pageSizeOptions={[ 20, 50, 100 ]}
+          onChange={(page: number) => dispatch(updatePageValue(page))}
+          onShowSizeChange={(page: number, item: number) => dispatch(updateItemValue(item))}
+        />
       </div>
     </div>
   );

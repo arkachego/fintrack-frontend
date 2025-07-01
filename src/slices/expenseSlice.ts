@@ -11,6 +11,7 @@ type ListType = {
 };
 
 type ActiveType = {
+  visible: boolean;
   loading: boolean;
   value: ExpenseType | null;
 };
@@ -20,7 +21,7 @@ interface ExpenseState {
   active: ActiveType;
 };
 
-const DEFAULT_EXPENSE = {
+const DEFAULT_EXPENSE: ExpenseType = {
   type_id: null,
   status_id: null,
   requestor_id: null,
@@ -29,6 +30,8 @@ const DEFAULT_EXPENSE = {
   name: '',
   details: null,
   amount: '',
+  files: [],
+  spent_at: null,
 };
 
 const initialState: ExpenseState = {
@@ -38,6 +41,7 @@ const initialState: ExpenseState = {
     value: [],
   },
   active: {
+    visible: false,
     loading: false,
     value: null,
   },
@@ -54,10 +58,9 @@ export const expenseSlice = createSlice({
         value: [],
       };
       state.active = {
+        visible: false,
         loading: false,
-        value: {
-          ...DEFAULT_EXPENSE,
-        },
+        value: null,
       };
     },
     setListLoading: (state, action: PayloadAction<boolean>) => {
@@ -83,10 +86,12 @@ export const expenseSlice = createSlice({
         name: action.payload.name,
         details: action.payload.details,
         amount: action.payload.amount,
-      } : DEFAULT_EXPENSE;
+        spent_at: action.payload.spent_at,
+      } as ExpenseType : DEFAULT_EXPENSE;
     },
     closeExpenseModal: (state) => {
       state.active = {
+        visible: false,
         loading: false,
         value: null,
       };
