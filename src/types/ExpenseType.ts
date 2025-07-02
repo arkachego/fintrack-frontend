@@ -1,4 +1,4 @@
-import type { ExpenseFileType } from "./ExpenseFileType";
+// Types
 import type { ModelObjectType } from "./ModelObjectType";
 
 export type ExpenseType = {
@@ -12,13 +12,13 @@ export type ExpenseType = {
   name: string;
   details: string | null;
   amount: string;
+  attachment: string | null;
 
   type?: ModelObjectType;
   status?: ModelObjectType;
   requestor?: ModelObjectType;
   approver?: ModelObjectType;
   team?: ModelObjectType;
-  files?: ExpenseFileType[];
 
   spent_at: string | null;
   requested_at?: string;

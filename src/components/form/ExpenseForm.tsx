@@ -1,16 +1,14 @@
 // Libraries
 import DayJS from "dayjs";
-import { useEffect } from 'react';
-import { InboxOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
+import { PictureOutlined } from '@ant-design/icons';
 import {
   DatePicker,
   Drawer,
   Form,
   Input,
   InputNumber,
-  Typography,
   Upload,
-  type UploadProps,
 } from 'antd';
 
 // Components
@@ -28,6 +26,7 @@ import { useAppSelector, useAppDispatch } from '../../hooks/useRedux';
 
 // Utilities
 import { createExpense } from "../../utilities/request";
+import type { RcFile } from "antd/es/upload";
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -38,6 +37,8 @@ const ExpenseForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const loading = useAppSelector(state => state.expense.active.loading);
   const expense = useAppSelector(state => state.expense.active.value);
+  const [ image, setImage ] = useState<File | null>(null);
+  const [ base64, setBase64 ] = useState<string>('');
 
   useEffect(() => {
     if (expense) {
@@ -51,6 +52,23 @@ const ExpenseForm: React.FC = () => {
   const onClick = async () => {
     try {
       const payload = form.getFieldsValue();
+      // if (image) {
+      //   const { data } = await getUploadUrl({
+      //     name: image.name,
+      //     type: image.type,
+      //   });
+      //   const response = await fetch(data.url, {
+      //     method: "PUT",
+      //     body: image,
+      //     headers: {
+      //       "Content-Type": image.type,
+      //     },
+      //   });
+      //   if (!response.ok) {
+      //     throw new Error("Upload failed");
+      //   }
+      //   console.log(response);
+      // }
       await createExpense({
         ...payload,
         spent_at: payload.spent_at.toISOString(),
@@ -63,12 +81,17 @@ const ExpenseForm: React.FC = () => {
     }
   };
 
-  const props: UploadProps = {
-    name: 'file',
-    multiple: true,
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
-    },
+  const onChange: (info: any) => void = (info) => {
+    const file = info.fileList[0].originFileObj;
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setBase64(reader.result as string);
+    };
+    reader.onerror = (error) => {
+      throw error;
+    };
+    setImage(file);
   };
 
   return (
@@ -79,6 +102,28 @@ const ExpenseForm: React.FC = () => {
       onClose={() => dispatch(closeExpenseModal())}
       open={expense !== null}
     >
+      <div style={{ width: '100%', aspectRatio: 1, marginBottom: 16 }}>
+        {image ? (
+          <img
+            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 10 }}
+            src={base64}
+          />
+        ) : (
+          <Dragger name="file" onChange={onChange} action={(_: RcFile) => ''} showUploadList={false}>
+            <PictureOutlined style={{ fontSize: 150 }}/>
+            <p className="ant-upload-text">
+              Upload the Supporting Document
+            </p>
+            <p className="ant-upload-hint">
+              Only JPG, JPEG and PNG files are allowed.
+              <br/>
+              Size of the file cannot be of more than 2 MB.
+              <br/>
+              Only one file can be linked with your expense.
+            </p>
+          </Dragger>
+        )}
+      </div>
       <Form
         form={form}
         name="expense-form"
@@ -116,23 +161,12 @@ const ExpenseForm: React.FC = () => {
         <Form.Item name="approver_id" label="Approver" rules={[{ required: true }]}>
           <ExpenseApproverSelect/>
         </Form.Item>
-        <Form.Item name="details" label="Description" rules={[{ min: 0, max: 250 }]}>
+        <Form.Item style={{ marginBottom: 0 }} name="details" label="Description" rules={[{ min: 0, max: 250 }]}>
           <TextArea
             rows={4}
             style={{ resize: 'none' }}
           />
         </Form.Item>
-        <Typography style={{ marginBottom: 7 }}>Files</Typography>
-        <Dragger {...props}>
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-          </p>
-          <p className="ant-upload-text">Click or drag file to this area to upload</p>
-          <p className="ant-upload-hint">
-            Support for a single or bulk upload. Strictly prohibited from uploading company data or other
-            banned files.
-          </p>
-        </Dragger>
         <SubmitButton
           form={form}
           loading={loading}

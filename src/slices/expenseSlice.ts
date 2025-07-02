@@ -30,7 +30,7 @@ const DEFAULT_EXPENSE: ExpenseType = {
   name: '',
   details: null,
   amount: '',
-  files: [],
+  attachment: null,
   spent_at: null,
 };
 
@@ -86,6 +86,7 @@ export const expenseSlice = createSlice({
         name: action.payload.name,
         details: action.payload.details,
         amount: action.payload.amount,
+        attachment: action.payload.attachment,
         spent_at: action.payload.spent_at,
       } as ExpenseType : DEFAULT_EXPENSE;
     },

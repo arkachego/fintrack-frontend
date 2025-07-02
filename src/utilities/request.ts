@@ -5,6 +5,7 @@ import axios from 'axios';
 import type { SearchType } from '../types/SearchType';
 import type { ExpenseType } from '../types/ExpenseType';
 import type { AnalyticsType } from '../types/AnalyticsType';
+import type { FileUploadType } from '../types/FileUploadType';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_BASE_URL || 'http://localhost:3000',
@@ -137,7 +138,15 @@ export const updateStatus = (payload: ExpenseType) => {
   return api.patch('/expense/status', payload);
 };
 
+export const getUploadUrl = (payload: FileUploadType) => {
+  return api.post('/file/upload', payload);
+};
+
+export const getDownloadUrl = (payload: FileUploadType) => {
+  return api.post('/file/download', payload);
+};
+
 export const fetchAnalytics = (payload: AnalyticsType) => {
   const { criteria, granularity } = generateAnalyticsQuery(payload);
-  return api.patch('/expense/analytics', { criteria, granularity });
+  return api.post('/expense/analytics', { criteria, granularity });
 };
