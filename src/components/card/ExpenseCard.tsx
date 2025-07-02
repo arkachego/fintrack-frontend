@@ -9,6 +9,8 @@ import { EXPENSE_STATUS_TYPE } from "../../constants/expense-status-types";
 
 // Types
 import type { ExpenseType } from "../../types/ExpenseType";
+import { useEffect, useState } from "react";
+import { getDownloadUrl } from "../../utilities/request";
 
 DayJS.extend(relativeTime);
 
@@ -47,7 +49,24 @@ type ExpenseCardProps = {
 
 const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onClick }) => {
 
-  const thumbnail = expense.attachment || null;
+  const objectKey = expense.attachment || null;
+  const [ imageUrl, setImageUrl ] = useState<string>('');
+
+  useEffect(() => {
+    if (objectKey) {
+      fetchSignedUrl(objectKey);
+    }
+  }, [ objectKey ]);
+
+  const fetchSignedUrl = (key: string) => {
+    try {
+      const { data } = getDownloadUrl({ name: key });
+      setImageUrl(data.url);
+    }
+    catch (error) {
+      console.log(error);
+    }
+  };
 
   const dataSource = [
     {
@@ -114,9 +133,9 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onClick }) => {
           >
             {expense.status?.name} {expense.status?.name === EXPENSE_STATUS_TYPE.PENDING ? 'for' : ''} {DayJS(getReferenceDate(expense)).fromNow(true)} {expense.status?.name === EXPENSE_STATUS_TYPE.PENDING ? '' : 'ago'}
           </Tag>
-          {thumbnail ? (
+          {imageUrl ? (
             <img
-              src="/sample-image.jpeg"
+              src={imageUrl}
               alt="Preview"
               style={{
                 width: '100%',
