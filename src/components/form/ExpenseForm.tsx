@@ -52,7 +52,6 @@ const ExpenseForm: React.FC = () => {
   const onClick = async () => {
     try {
       const payload = form.getFieldsValue();
-      /** THIS SECTION OF CODE IS BEING TESTED LIVE AFTER DEPLOYMENT */
       if (image) {
         const { data } = await getUploadUrl({
           name: image.name,
@@ -69,8 +68,7 @@ const ExpenseForm: React.FC = () => {
         if (!response.ok) {
           throw new Error("Upload failed");
         }
-        const payload = await response.json();
-        console.log(payload);
+        payload.attachment = data.name;
       }
       await createExpense({
         ...payload,
