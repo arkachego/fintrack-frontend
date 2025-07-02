@@ -69,7 +69,8 @@ const ExpenseForm: React.FC = () => {
         if (!response.ok) {
           throw new Error("Upload failed");
         }
-        console.log(response);
+        const payload = await response.json();
+        console.log(payload);
       }
       await createExpense({
         ...payload,
