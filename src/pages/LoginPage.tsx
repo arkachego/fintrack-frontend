@@ -18,8 +18,8 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [ loading, setLoading ] = useState<boolean>(false);
-  const [ email, setEmail ] = useState<string>('liam.bennett@arkahalder.com');
-  const [ password, setPassword ] = useState<string>('SamplePassword1234#');
+  const [ email, setEmail ] = useState<string>('');
+  const [ password, setPassword ] = useState<string>('');
 
   const handleLogin = async () => {
     try {
