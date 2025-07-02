@@ -4,6 +4,7 @@ import axios from 'axios';
 // Types
 import type { SearchType } from '../types/SearchType';
 import type { ExpenseType } from '../types/ExpenseType';
+import type { AnalyticsType } from '../types/AnalyticsType';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_BASE_URL || 'http://localhost:3000',
@@ -13,7 +14,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
-const generateQuery = (payload: SearchType) => {
+const generateSearchQuery = (payload: SearchType) => {
   const segment = {
     page: payload.page_value,
     item: payload.item_value,
@@ -76,6 +77,36 @@ const generateQuery = (payload: SearchType) => {
   return { segment, criteria };
 };
 
+const generateAnalyticsQuery = (payload: AnalyticsType) => {
+  const { granularity } = payload;
+  const criteria: any[] = [];
+  criteria.push({
+    field: 'approved_at',
+    operator: '>=',
+    reference: payload.approved_at[0],
+  });
+  criteria.push({
+    field: 'approved_at',
+    operator: '<=',
+    reference: payload.approved_at[1],
+  });
+  if (payload.type_id) {
+    criteria.push({
+      field: 'type_id',
+      operator: '=',
+      reference: payload.type_id,
+    });
+  }
+  if (payload.team_id) {
+    criteria.push({
+      field: 'team_id',
+      operator: '=',
+      reference: payload.team_id,
+    });
+  }
+  return { criteria, granularity };
+};
+
 export const loginUser = (email: string, password: string) => {
   return api.post('/auth/login', { email, password });
 };
@@ -84,33 +115,17 @@ export const logoutUser = () => {
   return api.head('/auth/logout');
 };
 
-export const fetchExpenseTeams = () => {
-  return api.get('/user/teams');
-};
-
-export const fetchExpenseApprovers = () => {
-  return api.get('/user/approvers');
-};
-
-export const fetchExpenseRequestors = () => {
-  return api.get('/user/requestors');
-};
-
-export const fetchExpenseTypes = () => {
-  return api.get('/expense/types');
-};
-
-export const fetchExpenseStatuses = () => {
-  return api.get('/expense/statuses');
+export const fetchProfile = () => {
+  return api.get('/user/profile');
 };
 
 export const fetchExpenseCount = (payload: SearchType) => {
-  const { criteria } = generateQuery(payload);
+  const { criteria } = generateSearchQuery(payload);
   return api.post('/expense/count', { criteria });
 };
 
 export const fetchExpenseResult = (payload: SearchType) => {
-  const { criteria, segment } = generateQuery(payload);
+  const { criteria, segment } = generateSearchQuery(payload);
   return api.post('/expense/search', { criteria, segment });
 };
 
@@ -120,4 +135,9 @@ export const createExpense = (payload: ExpenseType) => {
 
 export const updateStatus = (payload: ExpenseType) => {
   return api.patch('/expense/status', payload);
+};
+
+export const fetchAnalytics = (payload: AnalyticsType) => {
+  const { criteria, granularity } = generateAnalyticsQuery(payload);
+  return api.patch('/expense/analytics', { criteria, granularity });
 };

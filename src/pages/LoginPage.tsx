@@ -11,7 +11,7 @@ import { loadState } from "../slices/globalSlice";
 import { useAppDispatch } from "../hooks/useRedux";
 
 // Utilities
-import { loginUser } from "../utilities/request";
+import { fetchProfile, loginUser } from "../utilities/request";
 
 const LoginPage: React.FC = () => {
 
@@ -24,9 +24,12 @@ const LoginPage: React.FC = () => {
   const handleLogin = async () => {
     try {
       setLoading(true);
-      const response = await loginUser(email, password);
-      dispatch(loadState(response.data));
-      navigate('/expenses');
+      await loginUser(email, password);
+      setTimeout(async () => {
+        const response = await fetchProfile();
+        dispatch(loadState(response.data));
+        navigate('/expenses');
+      }, 500);
     }
     catch (error) {
       console.error(error);

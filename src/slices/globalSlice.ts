@@ -2,31 +2,55 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 // Types
-import { type ModelObjectType } from '../types/ModelObjectType';
+import type { ModelObjectType } from '../types/ModelObjectType';
+import type { SelectOptionType } from '../types/SelectOptionType';
+import type { MenuOptionType } from '../types/MenuOptionType';
 
 interface GlobalState {
-  user: ModelObjectType | null;
-  type: ModelObjectType | null;
-  active: string | null;
-  menu?: any[];
+  profile: {
+    user: ModelObjectType | null;
+    role: ModelObjectType | null;
+  },
+  options: {
+    types: SelectOptionType[] ;
+    statuses: SelectOptionType[];
+    teams: SelectOptionType[];
+    approvers: SelectOptionType[];
+    requestors: SelectOptionType[];
+  },
+  menu: {
+    active: string | null;
+    options: MenuOptionType[];
+  }
 }
 
 const initialState: GlobalState = {
-  user: null,
-  type: null,
-  active: 'expenses',
-  menu: [
-    {
-      key: 'expenses',
-      label: 'Expenses',
-      url: '/expenses',
-    },
-    {
-      key: 'analytics',
-      label: 'Analytics',
-      url: '/analytics',
-    },
-  ],
+  profile: {
+    user: null,
+    role: null,
+  },
+  options: {
+    types: [],
+    statuses: [],
+    teams: [],
+    approvers: [],
+    requestors: [],
+  },
+  menu: {
+    active: 'expenses',
+    options: [
+      {
+        key: 'expenses',
+        label: 'Expenses',
+        url: '/expenses',
+      },
+      {
+        key: 'analytics',
+        label: 'Analytics',
+        url: '/analytics',
+      },
+    ],
+  },
 };
 
 export const globalSlice = createSlice({
@@ -34,16 +58,25 @@ export const globalSlice = createSlice({
   initialState,
   reducers: {
     resetState: (state) => {
-      state.user = null;
-      state.type = null;
-      state.active = null;
+      state.profile = {
+        user: null,
+        role: null,
+      };
+      state.options = {
+        types: [],
+        statuses: [],
+        teams: [],
+        approvers: [],
+        requestors: [],
+      };
     },
     loadState: (state, action: PayloadAction<GlobalState>) => {
-      state.user = action.payload.user;
-      state.type = action.payload.type;
+      state.profile = action.payload.profile;
+      state.options = action.payload.options;
+      state.menu.active = 'expenses';
     },
     activatePage: (state, action: PayloadAction<string>) => {
-      state.active = action.payload;
+      state.menu.active = action.payload;
     },
   },
 });

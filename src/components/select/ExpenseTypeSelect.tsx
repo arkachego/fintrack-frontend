@@ -1,33 +1,15 @@
 // Libraries
-import { useEffect, useState } from "react";
 import { Select, type SelectProps } from "antd";
-
-// Utilities
-import { fetchExpenseTypes } from "../../utilities/request";
 
 // Types
 import type { SelectOptionType } from "../../types/SelectOptionType";
 
+// Hooks
+import { useAppSelector } from "../../hooks/useRedux";
+
 const ExpenseTypeSelect: React.FC<SelectProps> = (props) => {
 
-  const [ options, setOptions ] = useState<SelectOptionType[]>([]);
-  
-  useEffect(() => {
-    fetchOptions();
-  }, []);
-
-  const fetchOptions = async () => {
-    try {
-      const { data: newOptions } = await fetchExpenseTypes();
-      setOptions(newOptions.map((newOption: any) => ({
-        label: newOption.name,
-        value: newOption.id,
-      })));
-    }
-    catch (error) {
-      console.error(error);
-    }
-  };
+  const options = useAppSelector(state => state.global.options.types);
 
   return (
     <Select

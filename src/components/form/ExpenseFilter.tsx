@@ -29,7 +29,7 @@ const ExpenseFilter: React.FC = () => {
 
   const [ form ] = Form.useForm();
   const dispatch = useAppDispatch();
-  const type = useAppSelector(state => state.global.type);
+  const role = useAppSelector(state => state.global.profile.role);
   const visible = useAppSelector(state => state.search.visible);
   const loading = useAppSelector(state => state.expense.list.loading);
   const search = useAppSelector(state => state.search.value);
@@ -74,7 +74,7 @@ const ExpenseFilter: React.FC = () => {
             allowClear
           />
         </Form.Item>
-        {type?.name === USER_TYPE.ADMINISTRATOR && (
+        {role?.name === USER_TYPE.ADMINISTRATOR && (
           <Form.Item name="requestor_id" label="Requestor">
             <ExpenseRequestorSelect
               allowClear

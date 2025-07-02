@@ -28,10 +28,10 @@ const LayoutPage: React.FC = () => {
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const user = useAppSelector(state => state.global.user);
-  const type = useAppSelector(state => state.global.type);
-  const active = useAppSelector(state => state.global.active);
-  const menu = useAppSelector(state => state.global.menu);
+  const user = useAppSelector(state => state.global.profile.user);
+  const role = useAppSelector(state => state.global.profile.role);
+  const active = useAppSelector(state => state.global.menu.active);
+  const menu = useAppSelector(state => state.global.menu.options);
 
   useEffect(() => {
     if (!user) {
@@ -42,21 +42,23 @@ const LayoutPage: React.FC = () => {
   const onPageChange = (key: string) => {
     dispatch(activatePage(key));
     const item = (menu || []).find(i => i.key === key);
-    navigate(item.url);
+    if (item) {
+      navigate(item.url);
+    }
   };
 
   const handleLogout = async () => {
-      try {
-        await logoutUser();
-        dispatch(resetExpenseState());
-        dispatch(resetSearchState());
-        dispatch(resetGlobalState());
-        navigate('/login');
-      }
-      catch (error) {
-        console.error(error);
-      }
-    };
+    try {
+      await logoutUser();
+      dispatch(resetExpenseState());
+      dispatch(resetSearchState());
+      dispatch(resetGlobalState());
+      navigate('/login');
+    }
+    catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Layout style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
@@ -84,7 +86,7 @@ const LayoutPage: React.FC = () => {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', marginRight: 24 }}>
           <b style={{ color: 'white', fontSize: 20, marginRight: 6 }}>{user?.name}</b>
-          <span style={{ color: 'white', marginRight: 16 }}>({type?.name})</span>
+          <span style={{ color: 'white', marginRight: 16 }}>({role?.name})</span>
           <Button danger onClick={handleLogout}>
             <LogoutOutlined/>
             Sign-Out
