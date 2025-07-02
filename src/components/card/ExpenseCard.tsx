@@ -10,12 +10,6 @@ import { EXPENSE_STATUS_TYPE } from "../../constants/expense-status-types";
 // Types
 import type { ExpenseType } from "../../types/ExpenseType";
 
-// Hooks
-import { useAppDispatch } from "../../hooks/useRedux";
-
-// Actions
-import { openExpenseModal } from "../../slices/expenseSlice";
-
 DayJS.extend(relativeTime);
 
 const getStatusColor: (type: string) => string = (type) => {
@@ -48,11 +42,11 @@ const getReferenceDate: (expense: ExpenseType) => string = (expense) => {
 
 type ExpenseCardProps = {
   expense: ExpenseType;
+  onClick: () => void;
 };
 
-const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense }) => {
+const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onClick }) => {
 
-  const dispatch = useAppDispatch();
   const thumbnail = expense.attachment || null;
 
   const dataSource = [
@@ -101,7 +95,7 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense }) => {
       <Card
         hoverable
         styles={{ body: { padding: 0 } }}
-        onClick={() => dispatch(openExpenseModal(expense))}
+        onClick={onClick}
       >
         <div style={{
           width: '100%',

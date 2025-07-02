@@ -21,22 +21,28 @@ import {
 import ExpenseCard from "../components/card/ExpenseCard";
 import ExpenseFilter from "../components/form/ExpenseFilter";
 import ExpenseForm from "../components/form/ExpenseForm";
+import ApproveModal from "../components/modal/ApproveModal";
 
 // Hooks
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 
 // Utilities
-import { fetchExpenseCount, fetchExpenseResult } from "../utilities/request";
+import { fetchExpenseCount, fetchExpenseResult, updateStatus } from "../utilities/request";
+
+// Types
+import type { ExpenseType } from "../types/ExpenseType";
 
 const ExpensesPage: React.FC = () => {
 
   const dispatch = useAppDispatch();
+  const statuses = useAppSelector(state => state.global.options.statuses);
   const search = useAppSelector(state => state.search.value);
   const loading = useAppSelector(state => state.expense.list.loading);
   const count = useAppSelector(state => state.expense.list.count);
   const expenses = useAppSelector(state => state.expense.list.value);
   const [ launched, setLaunched ] = useState<boolean>(false);
   const [ searchString, setSearchString ] = useState<string>('');
+  const [ selected, setSelected ] = useState<ExpenseType | null>(null);
 
   const {
     keyword,
@@ -107,6 +113,18 @@ const ExpensesPage: React.FC = () => {
     }
   };
 
+  const onStatusSubmit = async (status: string) => {
+    const chosenStatus = statuses.find(s => s.label === status);
+    if (chosenStatus) {
+      await updateStatus({
+        id: selected?.id || '',
+        status_id: chosenStatus.value,
+      });
+      await loadOtherPage();
+    }
+    setSelected(null);
+  };
+
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <div style={{ height: 88, padding: 24, borderBottom: 'thin solid #DEDEDE', display: 'flex', justifyContent: 'space-between' }}>
@@ -138,12 +156,21 @@ const ExpensesPage: React.FC = () => {
       <div style={{ width: '100%', height: window.innerHeight - 232, overflow: 'hidden auto' }}>
         <Row gutter={[24, 24]} style={{ padding: 24 }}>
           {expenses.map(expense => (
-            <ExpenseCard key={expense.id} expense={expense}/>
+            <ExpenseCard
+              key={expense.id}
+              expense={expense}
+              onClick={() => setSelected(expense)}
+            />
           ))}
         </Row>
       </div>
       <ExpenseFilter/>
       <ExpenseForm/>
+      <ApproveModal
+        open={!!selected}
+        onCancel={() => setSelected(null)}
+        onSubmit={onStatusSubmit}
+      />
       <div style={{ height: 80, padding: 24, borderTop: 'thin solid #DEDEDE', display: 'flex', justifyContent: 'center' }}>
         <Pagination
           total={count}

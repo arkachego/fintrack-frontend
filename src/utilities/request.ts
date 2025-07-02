@@ -6,6 +6,7 @@ import type { SearchType } from '../types/SearchType';
 import type { ExpenseType } from '../types/ExpenseType';
 import type { AnalyticsType } from '../types/AnalyticsType';
 import type { FileUploadType } from '../types/FileUploadType';
+import type { StatusType } from '../types/StatusType';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_BASE_URL || 'http://localhost:3000',
@@ -134,7 +135,7 @@ export const createExpense = (payload: ExpenseType) => {
   return api.post('/expense', payload);
 };
 
-export const updateStatus = (payload: ExpenseType) => {
+export const updateStatus = (payload: StatusType) => {
   return api.patch('/expense/status', payload);
 };
 
