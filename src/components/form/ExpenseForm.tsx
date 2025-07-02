@@ -25,7 +25,7 @@ import { resetState as resetSearchState } from '../../slices/searchSlice';
 import { useAppSelector, useAppDispatch } from '../../hooks/useRedux';
 
 // Utilities
-import { createExpense } from "../../utilities/request";
+import { createExpense, getUploadUrl } from "../../utilities/request";
 import type { RcFile } from "antd/es/upload";
 
 const { TextArea } = Input;
@@ -52,23 +52,24 @@ const ExpenseForm: React.FC = () => {
   const onClick = async () => {
     try {
       const payload = form.getFieldsValue();
-      // if (image) {
-      //   const { data } = await getUploadUrl({
-      //     name: image.name,
-      //     type: image.type,
-      //   });
-      //   const response = await fetch(data.url, {
-      //     method: "PUT",
-      //     body: image,
-      //     headers: {
-      //       "Content-Type": image.type,
-      //     },
-      //   });
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
-      //   console.log(response);
-      // }
+      /** THIS SECTION OF CODE IS BEING TESTED LIVE AFTER DEPLOYMENT */
+      if (image) {
+        const { data } = await getUploadUrl({
+          name: image.name,
+          type: image.type,
+        });
+        const response = await fetch(data.url, {
+          method: "PUT",
+          body: image,
+          headers: {
+            "Content-Type": image.type,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Upload failed");
+        }
+        console.log(response);
+      }
       await createExpense({
         ...payload,
         spent_at: payload.spent_at.toISOString(),
