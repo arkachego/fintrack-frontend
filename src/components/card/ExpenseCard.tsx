@@ -53,7 +53,7 @@ type ExpenseCardProps = {
 const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense }) => {
 
   const dispatch = useAppDispatch();
-  const thumbnail = expense.files ? expense.files[0] : null;
+  const thumbnail = expense.attachment || null;
 
   const dataSource = [
     {

@@ -21,7 +21,7 @@ const AnalyticsChart: React.FC<Props> = ({ model }) => {
   const [ loading, setLoading ] = useState<boolean>(false);
   const [ reference, setReference ] = useState<string>(options[0].value);
   const [ granularity, setGranularity ] = useState<string>('monthly');
-  const [ dateRange, setDateRange ] = useState<string[]>([
+  const [ dateRange, setDateRange ] = useState<[string, string]>([
     DayJS(currentStamp).subtract(1, 'year').toISOString(),
     currentStamp.toISOString(),
   ]);
@@ -59,6 +59,7 @@ const AnalyticsChart: React.FC<Props> = ({ model }) => {
         <div style={{ width: 170 }}>
           <Typography style={{ marginBottom: 2, fontWeight: 'bold' }}>{model}</Typography>
           <Select
+            disabled={loading}
             value={reference}
             onChange={(value: string) => setReference(value)}
             style={{ width: '100%' }}
@@ -68,15 +69,17 @@ const AnalyticsChart: React.FC<Props> = ({ model }) => {
         <div style={{ flexGrow: 1 }}>
           <Typography style={{ marginBottom: 2, fontWeight: 'bold' }}>Approval Date Range</Typography>
           <RangePicker
+            disabled={loading}
             style={{ width: '100%' }}
             format="DD-MMM-YY"
-            value={dateRange.map(date => DayJS(date))}
-            onChange={(_, dateStrings: string[]) => setDateRange(dateStrings)}
+            value={[ DayJS(dateRange[0]), DayJS(dateRange[1]) ]}
+            onChange={(_, dateStrings: string[]) => setDateRange([ dateStrings[0], dateStrings[1] ])}
           />
         </div>
         <div style={{ width: 170 }}>
           <Typography style={{ marginBottom: 2, fontWeight: 'bold' }}>Granularity</Typography>
           <Select
+            disabled={loading}
             style={{ width: '100%' }}
             value={granularity}
             onChange={(value: string) => setGranularity(value)}
