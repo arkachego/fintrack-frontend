@@ -8,19 +8,28 @@ import type { AnalyticsType } from '../types/AnalyticsType';
 import type { FileUploadType } from '../types/FileUploadType';
 import type { StatusType } from '../types/StatusType';
 
-const headers: any = {
-  'Content-Type': 'application/json',
-};
-const authToken = localStorage.getItem('x-auth-token');
-if (authToken) {
-  headers['Authorization'] = `Bearer ${authToken}`;
-}
+
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_BASE_URL || 'http://localhost:3000',
-  headers,
+  headers: {
+    'Content-Type': 'application/json',
+  },
   withCredentials: true,
 });
+
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('x-auth-token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 const generateSearchQuery = (payload: SearchType) => {
   const segment = {
