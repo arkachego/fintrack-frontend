@@ -35,7 +35,7 @@ const LoginHeader: React.FC<HeaderProps> = ({ checked, setChecked }) => {
 
 const LoginPage: React.FC = () => {
 
-  const [ checked, setChecked ] = useState<boolean>(import.meta.env.NODE_ENV !== 'deployment');
+  const [ checked, setChecked ] = useState<boolean>(false);
   const [ testEmail, setTestEmail ] = useState<string>('');
 
   useEffect(() => {
