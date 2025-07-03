@@ -137,7 +137,7 @@ const ExpensesPage: React.FC = () => {
           />
           <Switch
             checked={show_queue}
-            onChange={(_: boolean) => toggleShowQueue()}
+            onChange={(_: boolean) => dispatch(toggleShowQueue())}
             checkedChildren="Approval Queue: ON"
             unCheckedChildren="Approval Queue: OFF"
           />
