@@ -53,7 +53,6 @@ const LayoutPage: React.FC = () => {
       dispatch(resetExpenseState());
       dispatch(resetSearchState());
       dispatch(resetGlobalState());
-      localStorage.removeItem('x-auth-token');
       navigate('/login');
     }
     catch (error) {

@@ -20,7 +20,7 @@ const LoginHeader: React.FC<HeaderProps> = ({ checked, setChecked }) => {
       <div>
         FinTrack: Sign-In
       </div>
-      {import.meta.env.ENVIRONMENT !== 'production' && (
+      {import.meta.env.VITE_ENVIRONMENT !== 'production' && (
         <Switch
         checkedChildren="Admin"
           unCheckedChildren="Employee"
