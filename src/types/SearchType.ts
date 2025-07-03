@@ -1,4 +1,5 @@
 export type SearchType = {
+  show_queue?: boolean;
   keyword?: string | null;
   type_id?: string | null;
   status_id?: string | null;
