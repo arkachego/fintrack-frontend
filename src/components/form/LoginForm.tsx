@@ -27,6 +27,8 @@ const LoginForm: React.FC<Props> = ({ testEmail }) => {
   const dispatch = useAppDispatch();
   const [ loading, setLoading ] = useState<boolean>(false);
 
+  console.log(import.meta.env.VITE_ENVIRONMENT);
+  
   useEffect(() => {
     if (testEmail && (import.meta.env.VITE_ENVIRONMENT !== 'production')) {
       form.setFieldValue('email', testEmail);
