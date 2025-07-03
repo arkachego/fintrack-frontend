@@ -1,10 +1,11 @@
 // Libraries
+import { useEffect, useState } from 'react';
 import { Card, Switch } from 'antd';
 
 // Forms
 import LoginForm from '../components/form/LoginForm';
-import { useEffect, useState } from 'react';
 
+// Utilities
 import { getTestEmail } from '../utilities/test-email';
 
 type HeaderProps = {
@@ -19,7 +20,7 @@ const LoginHeader: React.FC<HeaderProps> = ({ checked, setChecked }) => {
       <div>
         FinTrack: Sign-In
       </div>
-      {import.meta.env.NODE_ENV !== 'deployment' && (
+      {import.meta.env.ENVIRONMENT !== 'production' && (
         <Switch
         checkedChildren="Admin"
           unCheckedChildren="Employee"
@@ -34,7 +35,7 @@ const LoginHeader: React.FC<HeaderProps> = ({ checked, setChecked }) => {
 
 const LoginPage: React.FC = () => {
 
-  const [ checked, setChecked ] = useState<boolean>(import.meta.env.NODE_ENV !== 'deployment');
+  const [ checked, setChecked ] = useState<boolean>(false);
   const [ testEmail, setTestEmail ] = useState<string>('');
 
   useEffect(() => {

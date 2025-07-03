@@ -62,7 +62,6 @@ const ExpenseForm: React.FC = () => {
           body: image,
           headers: {
             "Content-Type": image.type,
-            "Access-Control-Allow-Origin": import.meta.env.VITE_CLIENT_BASE_URL,
           },
         });
         if (!response.ok) {
