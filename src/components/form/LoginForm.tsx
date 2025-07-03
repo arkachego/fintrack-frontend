@@ -38,7 +38,8 @@ const LoginForm: React.FC<Props> = ({ testEmail }) => {
     try {
       setLoading(true);
       const payload = form.getFieldsValue();
-      await loginUser(payload.email, payload.password);
+      const response = await loginUser(payload.email, payload.password);
+      localStorage.setItem('x-auth-token', response.data.token);
       setTimeout(async () => {
         const response = await fetchProfile();
         dispatch(loadState(response.data));
