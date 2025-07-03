@@ -28,7 +28,7 @@ const LoginForm: React.FC<Props> = ({ testEmail }) => {
   const [ loading, setLoading ] = useState<boolean>(false);
 
   useEffect(() => {
-    if (testEmail) {
+    if (testEmail && (import.meta.env.VITE_ENVIRONMENT !== 'production')) {
       form.setFieldValue('email', testEmail);
       form.setFieldValue('password', [ 'Sample', 'Password', '1234', '#' ].join(''));
     }
