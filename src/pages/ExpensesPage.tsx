@@ -1,11 +1,12 @@
 // Libraries
 import { useEffect, useState } from "react";
-import { Button, Input, Row, Pagination } from "antd";
+import { Button, Input, Row, Switch, Pagination } from "antd";
 import { FilterFilled, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
 // Actions
 import {
   toggleSearchModal,
+  toggleShowQueue,
   updateKeyword,
   updatePageValue,
   updateItemValue,
@@ -45,6 +46,7 @@ const ExpensesPage: React.FC = () => {
   const [ selected, setSelected ] = useState<ExpenseType | null>(null);
 
   const {
+    show_queue,
     keyword,
     type_id,
     status_id,
@@ -128,10 +130,16 @@ const ExpensesPage: React.FC = () => {
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <div style={{ height: 88, padding: 24, borderBottom: 'thin solid #DEDEDE', display: 'flex', justifyContent: 'space-between' }}>
-        <Button
-          icon={<FilterFilled/>}
-          onClick={() => dispatch(toggleSearchModal())}
-        />
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Button
+            icon={<FilterFilled/>}
+            onClick={() => dispatch(toggleSearchModal())}
+          />
+          <Switch
+            checked={show_queue}
+            onChange={(_: boolean) => toggleShowQueue()}
+          />
+        </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <Input
             allowClear
