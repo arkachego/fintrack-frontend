@@ -58,9 +58,9 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onClick }) => {
     }
   }, [ objectKey ]);
 
-  const fetchSignedUrl = (key: string) => {
+  const fetchSignedUrl = async (key: string) => {
     try {
-      const { data } = getDownloadUrl({ name: key });
+      const { data } = await getDownloadUrl({ name: key });
       setImageUrl(data.url);
     }
     catch (error) {
