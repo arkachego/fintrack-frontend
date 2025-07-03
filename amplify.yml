@@ -5,8 +5,10 @@ frontend:
       commands:
         - echo "Cleaning previous builds..."
         - rm -rf node_modules dist .npm
-        - npm ci --prefer-offline
+        - npm ci
         - export PATH="$PATH:$(pwd)/node_modules/.bin"
+        - ls -l node_modules/.bin/tsc || echo "tsc not found"
+        - node_modules/.bin/tsc --version || echo "tsc version check failed"
     build:
       commands:
         - echo "Starting fresh build..."
