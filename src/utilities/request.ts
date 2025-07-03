@@ -13,7 +13,7 @@ const headers: any = {
 };
 const authToken = localStorage.getItem('x-auth-token');
 if (authToken) {
-  headers['Authorization'] = `Bearer ${token}`;
+  headers['Authorization'] = `Bearer ${authToken}`;
 }
 
 const api = axios.create({
