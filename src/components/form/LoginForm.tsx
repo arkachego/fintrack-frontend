@@ -1,5 +1,5 @@
 // Libraries
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Form, Input } from 'antd';
 import { KeyOutlined, LoginOutlined, UserOutlined } from '@ant-design/icons';
@@ -16,12 +16,23 @@ import { loadState } from "../../slices/globalSlice";
 // Utilities
 import { fetchProfile, loginUser } from "../../utilities/request";
 
-const LoginForm: React.FC = () => {
+type Props = {
+  testEmail: string;
+};
+
+const LoginForm: React.FC<Props> = ({ testEmail }) => {
 
   const [ form ] = Form.useForm();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [ loading, setLoading ] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (testEmail) {
+      form.setFieldValue('email', testEmail);
+      form.setFieldValue('password', [ 'Sample', 'Password', '1234', '#' ].join(''));
+    }
+  }, [ testEmail ]);
 
   const handleLogin = async () => {
     try {
