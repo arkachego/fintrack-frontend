@@ -11,6 +11,7 @@ type StateType = {
 const initialState: StateType = {
   visible: false,
   value: {
+    show_queue: false,
     keyword: null,
     type_id: null,
     status_id: null,
@@ -30,6 +31,7 @@ export const searchSlice = createSlice({
     resetState: (state) => {
       state.visible = false;
       state.value = {
+        show_queue: false,
         keyword: null,
         type_id: null,
         status_id: null,
@@ -43,6 +45,9 @@ export const searchSlice = createSlice({
     },
     toggleSearchModal: (state) => {
       state.visible = !state.visible;
+    },
+    toggleShowQueue: (state, action: PayloadAction<boolean>) => {
+      state.value.show_queue = action.payload;
     },
     updateKeyword: (state, action: PayloadAction<string>) => {
       state.value.keyword = action.payload || null;
@@ -65,6 +70,7 @@ export const searchSlice = createSlice({
 export const {
   resetState,
   toggleSearchModal,
+  toggleShowQueue,
   updateKeyword,
   updateFilters,
   updatePageValue,
