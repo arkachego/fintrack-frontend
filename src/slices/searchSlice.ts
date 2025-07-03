@@ -46,8 +46,8 @@ export const searchSlice = createSlice({
     toggleSearchModal: (state) => {
       state.visible = !state.visible;
     },
-    toggleShowQueue: (state, action: PayloadAction<boolean>) => {
-      state.value.show_queue = action.payload;
+    toggleShowQueue: (state) => {
+      state.value.show_queue = !state.value.show_queue;
     },
     updateKeyword: (state, action: PayloadAction<string>) => {
       state.value.keyword = action.payload || null;
