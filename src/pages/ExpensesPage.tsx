@@ -134,7 +134,7 @@ const ExpensesPage: React.FC = () => {
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <div style={{ height: 88, padding: 24, borderBottom: 'thin solid #DEDEDE', display: 'flex', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <Button
             icon={<FilterFilled/>}
             onClick={() => dispatch(toggleSearchModal())}
