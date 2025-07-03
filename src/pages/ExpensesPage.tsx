@@ -24,6 +24,9 @@ import ExpenseFilter from "../components/form/ExpenseFilter";
 import ExpenseForm from "../components/form/ExpenseForm";
 import ApproveModal from "../components/modal/ApproveModal";
 
+// Constants
+import { USER_TYPE } from "../constants/user-types";
+
 // Hooks
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 
@@ -36,6 +39,7 @@ import type { ExpenseType } from "../types/ExpenseType";
 const ExpensesPage: React.FC = () => {
 
   const dispatch = useAppDispatch();
+  const role = useAppSelector(state => state.global.profile.role);
   const statuses = useAppSelector(state => state.global.options.statuses);
   const search = useAppSelector(state => state.search.value);
   const loading = useAppSelector(state => state.expense.list.loading);
@@ -135,12 +139,14 @@ const ExpensesPage: React.FC = () => {
             icon={<FilterFilled/>}
             onClick={() => dispatch(toggleSearchModal())}
           />
-          <Switch
-            checked={show_queue}
-            onChange={(_: boolean) => dispatch(toggleShowQueue())}
-            checkedChildren="Approval Queue: ON"
-            unCheckedChildren="Approval Queue: OFF"
-          />
+          {(role.name === USER.TYPE.ADMINISTRATOR) && (
+            <Switch
+              checked={show_queue}
+              onChange={(_: boolean) => dispatch(toggleShowQueue())}
+              checkedChildren="Approval Queue: ON"
+              unCheckedChildren="Approval Queue: OFF"
+            />
+          )}
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <Input
