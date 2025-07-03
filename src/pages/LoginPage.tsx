@@ -19,7 +19,7 @@ const LoginHeader: React.FC<HeaderProps> = ({ checked, setChecked }) => {
       <div>
         FinTrack: Sign-In
       </div>
-      {import.meta.env.NODE_ENV !== 'production' && (
+      {import.meta.env.NODE_ENV !== 'deployment' && (
         <Switch
         checkedChildren="Admin"
           unCheckedChildren="Employee"
@@ -34,7 +34,7 @@ const LoginHeader: React.FC<HeaderProps> = ({ checked, setChecked }) => {
 
 const LoginPage: React.FC = () => {
 
-  const [ checked, setChecked ] = useState<boolean>(import.meta.env.NODE_ENV !== 'production');
+  const [ checked, setChecked ] = useState<boolean>(import.meta.env.NODE_ENV !== 'deployment');
   const [ testEmail, setTestEmail ] = useState<string>('');
 
   useEffect(() => {
