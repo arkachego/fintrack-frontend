@@ -138,6 +138,8 @@ const ExpensesPage: React.FC = () => {
           <Switch
             checked={show_queue}
             onChange={(_: boolean) => toggleShowQueue()}
+            checkedChildren="Approval Queue: ON"
+            unCheckedChildren="Approval Queue: OFF"
           />
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
