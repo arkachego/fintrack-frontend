@@ -139,7 +139,7 @@ const ExpensesPage: React.FC = () => {
             icon={<FilterFilled/>}
             onClick={() => dispatch(toggleSearchModal())}
           />
-          {(role.name === USER.TYPE.ADMINISTRATOR) && (
+          {(role.name === USER_TYPE.ADMINISTRATOR) && (
             <Switch
               checked={show_queue}
               onChange={(_: boolean) => dispatch(toggleShowQueue())}
