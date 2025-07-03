@@ -144,7 +144,7 @@ export const getUploadUrl = (payload: FileUploadType) => {
 };
 
 export const getDownloadUrl = (payload: FileUploadType) => {
-  return api.post('/file/download', payload);
+  return api.get(`/file/download?key=${payload.name}`);
 };
 
 export const fetchAnalytics = (payload: AnalyticsType) => {
