@@ -6,6 +6,7 @@ frontend:
         - echo "Cleaning previous builds..."
         - rm -rf node_modules dist .npm
         - npm ci --prefer-offline
+        - export PATH="$PATH:$(pwd)/node_modules/.bin"
     build:
       commands:
         - echo "Starting fresh build..."
