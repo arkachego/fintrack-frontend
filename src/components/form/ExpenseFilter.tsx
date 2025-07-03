@@ -30,11 +30,12 @@ const ExpenseFilter: React.FC = () => {
 
   const [ form ] = Form.useForm();
   const dispatch = useAppDispatch();
+  const user = useAppSelector(state => state.global.profile.user);
   const role = useAppSelector(state => state.global.profile.role);
   const visible = useAppSelector(state => state.search.visible);
   const loading = useAppSelector(state => state.expense.list.loading);
   const search = useAppSelector(state => state.search.value);
-  const pending = useAppSelector(state => state.global.options.statuses.find(s => s.name === 'Pending'));
+  const pending = useAppSelector(state => state.global.options.statuses.find(s => s.label === EXPENSE_STATUS_TYPE.PENDING));
   const { show_queue } = search;
 
   useEffect(() => {
@@ -44,12 +45,12 @@ const ExpenseFilter: React.FC = () => {
   }, [ search ]);
 
   useEffect(() => {
-    if (role.name === USER_TYPE.ADMINISTRATOR) {
+    if (role?.name === USER_TYPE.ADMINISTRATOR) {
       const delta: SearchType = form.getFieldsValue();
       dispatch(updateFilters({
         ...delta,
-        status_id: show_queue ? pending.id : null,
-        approver_id: show_queue ? user.id : null,
+        status_id: show_queue ? pending?.value : null,
+        approver_id: show_queue ? user?.id : null,
       }));
     }
   }, [ show_queue ]);
